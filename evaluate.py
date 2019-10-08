@@ -37,6 +37,8 @@ def evaluate_expression(expression, dico, list_of_symbols):
     expression = list(expression)
     print(expression)
     # Remove < because it is useless to evaluate the expression
+    if ">" in expression:
+        expression.remove(">")
     if "<" in expression:
         expression.remove("<")
     # Replace characters with value 1 or -1
