@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    parse.py                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: lchancri <lchancri@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/10/08 17:23:49 by lchancri          #+#    #+#              #
+#    Updated: 2019/10/08 17:31:03 by lchancri         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 import sys
 
 def read_file(file_path):
@@ -41,7 +53,6 @@ def clear_text(split):
             for j in range(0, len(line)):
                 if line[j] == '#':
                     split[i] = line[:j]
-                    print(line)
                     break
         i += 1
     return split
@@ -59,4 +70,3 @@ def parse(file_path, list_of_symbols):
     print(dico)
     print(target)
     return split, dico, target
-
