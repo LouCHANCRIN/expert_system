@@ -30,17 +30,23 @@ def calcul(expression, i):
     expression.remove(expression[i])
     expression.remove(expression[i])
 
-    print(expression)
+    #print(expression)
     return expression
 
-def evaluate_expression(expression, dico, list_of_symbols):
-    expression = list(expression)
-    print(expression)
-    # Remove < because it is useless to evaluate the expression
+def clean(expression):
+    # Remove <, >, ! because we dont need them anymore to evaluate
     if ">" in expression:
         expression.remove(">")
     if "<" in expression:
         expression.remove("<")
+    if "!" in expression:
+        expression.remove("!")
+    return expression
+
+
+def evaluate_expression(expression, dico, list_of_symbols):
+    expression = list(expression)
+    #print(expression)
     # Replace characters with value 1 or -1
     for i in range(0, len(expression)):
         if expression[i] not in list_of_symbols:
@@ -49,16 +55,14 @@ def evaluate_expression(expression, dico, list_of_symbols):
     for i in range(0, len(expression)):
         if expression[i] == '!':
             expression[i+1] *= -1
-    if "!" in expression:
-        expression.remove("!")
-
-    print(expression)
+    expression = clean(expression)
+    print("Clean :", expression)
     length = len(expression)
     i = 0
     while i < length:
         if expression[i] in list_of_symbols:
-           expression = calcul(expression, i)
-           length -= 2
-           i -= 1
+            expression = calcul(expression, i)
+            length -= 2
+            i -= 1
         i += 1
     return int(expression[0])
