@@ -6,7 +6,7 @@
 #    By: lchancri <lchancri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/10/08 17:23:50 by lchancri          #+#    #+#              #
-#    Updated: 2019/10/08 19:04:20 by lchancri         ###   ########.fr        #
+#    Updated: 2019/10/09 17:02:34 by lchancri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,6 @@ def calcul(expression, i):
         expression = xor_function(expression, i)
     expression.remove(expression[i])
     expression.remove(expression[i])
-
     #print(expression)
     return expression
 
@@ -55,7 +54,6 @@ def clean(expression):
         expression.remove("!")
     return expression
 
-
 def evaluate_expression(expression, dico, list_of_symbols):
     expression = list(expression)
     #print(expression)
@@ -68,7 +66,8 @@ def evaluate_expression(expression, dico, list_of_symbols):
         if expression[i] == '!':
             expression[i+1] *= -1
     expression = clean(expression)
-    print("Clean :", expression)
+#    print(expression)
+#    print("Clean :", expression)
     length = len(expression)
     i = 0
     while i < length:
