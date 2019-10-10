@@ -6,9 +6,25 @@
 #    By: lchancri <lchancri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/10/08 17:23:50 by lchancri          #+#    #+#              #
-#    Updated: 2019/10/10 14:15:11 by lchancri         ###   ########.fr        #
+#    Updated: 2019/10/10 15:52:47 by lchancri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
+def clean(expression):
+    # Remove <, >, ! because we dont need them anymore to evaluate
+    if ">" in expression:
+        expression.remove(">")
+    if "<" in expression:
+        expression.remove("<")
+    length = len(expression)
+    i = 0
+    while i < length:
+        if expression[i] == '!' and expression[i+1] not in ['(', ')']:
+            del expression[i]
+            i -= 1
+            length -= 1
+        i += 1
+    return expression
 
 def and_function(expression, i):
     if expression[i-1] == 1 and expression[i+1] == 1:
@@ -32,12 +48,6 @@ def xor_function(expression, i):
         expression[i-1] = -1
     return expression
 
-def split_parenthese(expression):
-    parenthese = []
-    print("Expression :", expression)
-    for i in range(0, len(expression)):
-        print(i)
-
 def calcul(expression, i):
     if expression[i] == '+':
         expression = and_function(expression, i)
@@ -47,22 +57,6 @@ def calcul(expression, i):
         expression = xor_function(expression, i)
     del expression[i]
     del expression[i]
-    return expression
-
-def clean(expression):
-    # Remove <, >, ! because we dont need them anymore to evaluate
-    if ">" in expression:
-        expression.remove(">")
-    if "<" in expression:
-        expression.remove("<")
-    length = len(expression)
-    i = 0
-    while i < length:
-        if expression[i] == '!' and expression[i+1] not in ['(', ')']:
-            del expression[i]
-            i -= 1
-            length -= 1
-        i += 1
     return expression
 
 def index_parenthese(expression):

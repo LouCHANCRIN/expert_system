@@ -6,13 +6,14 @@
 #    By: lchancri <lchancri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/10/08 15:50:35 by lchancri          #+#    #+#              #
-#    Updated: 2019/10/09 17:02:28 by lchancri         ###   ########.fr        #
+#    Updated: 2019/10/10 17:12:18 by lchancri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import sys
 import parse
 import evaluate
+import copy
 
 '''
 () = priority order
@@ -23,46 +24,8 @@ import evaluate
 => implies
 <=> if and only if
 '''
-#def vrai_algo(word, fichier, dico, list_of_symbols):
-#    functions = []
-#    print("Word :", word)
-#    for i in range(0, len(fichier)):
-#        if check_if_usefull(fichier[i], word) == True:
-#            functions.append(i)
-#    print(functions)
-#    for i in functions:
-#        for j in range(0, len(functions[i])):
-#            if functions[i][j] not in list_of_symbols and dico[functions[i][j]] == -1:
-#                dico[functions[i][j]] = vrai_algo(functions[i][j], fichier, dico, list_of_symbols)
-#        value = evaluate_2(dico, fichier[i], list_of_symbols)
-#        if value == 1:
-#            return 1
-#        print("Value :", value)
-#        print(fichier[i])
-#    return -1
 
-#def algo(word, fichier, dico, list_of_symbols, mots):
-#    functions = []
-#    mots.append(word)
-#    for function in fichier:
-#        if check_if_usefull(function, word) == True:
-#            functions.append(function)
-    #print(functions)
-#    for function in functions:
-#        tmp = function.split("=")
-#        for i in range(0, len(function)):
-#            if (function[i] not in list_of_symbols and dico[function[i]] == -1
-#                    and function[i] not in  mots):
-#                mot = function[i]
-#                dico[mot] = algo(mot, fichier, dico, list_of_symbols, mots)
-#        value = evaluation(dico, function, list_of_symbols, word)
-#        if value == 1:
-#            print(function, ":", value)
-#            return 1
-#        print(function, ":", -1)
-#    return -1
-
-def check(word, conclusion, i, length):
+def check(conclusion, i, length):
     undefined = ['^', '|']
     if ((i > 0 and conclusion[i-1] in undefined)
             or (i < length - 1 and conclusion[i+1] in undefined)):
@@ -71,7 +34,6 @@ def check(word, conclusion, i, length):
         return -1
     return 1
 
-
 def evaluation(dico, expression, conclusion, list_of_symbols, word):
     first = evaluate.evaluate_expression(expression, dico, list_of_symbols)
     if first == -1:
@@ -79,7 +41,7 @@ def evaluation(dico, expression, conclusion, list_of_symbols, word):
     length = len(conclusion)
     for i in range(0, length):
         if conclusion[i] == word:
-            a = check(word, conclusion, i, length)
+            a = check(conclusion, i, length)
             if a != 1:
                 return a
     return 1
@@ -93,27 +55,33 @@ def check_if_usefull(line, target):
             return True
     return False
 
-def check_contradiction(functions, values, word):
+def check_contradiction(functions, values, word, dico):
+    for i in range(0, len(values)):
+        print(functions[i], "}--->>>", word, "=", values[i])
+    if not values:
+        #print("Est-ce un cas indefini lorsqu'il n'y a pas d'expression permettant de déterminer la valeur d'une lettre ?")
+        return -1
     if 1 in values and -1 in values:
-        print("Il y a un contradiction")
-        for i in range(0, len(values)):
-            print(functions[i], "=", values[i])
+        print("Il y a une contradiction")
+        #for i in range(0, len(values)):
+        #    print(functions[i], "=", values[i])
         return -2
     if 1 in values:
-        for i in range(0, len(values)):
-            if values[i] == 1:
-                print(functions[i], ':', word, ": 1")
-                return 1
+        #for i in range(0, len(values)):
+        #    if values[i] == 1:
+        #        print(functions[i], '-->', word, ": 1")
+        #        return 1
+        return 1
     if 0 in values:
-        for i in range(0, len(values)):
-            if values[i] == 1:
-                print(functions[i], ':', word, ": 1")
-                return 0
-        #print(word, ": 0")
-        #return 0 
-    print(word, ": -1")
+        #for i in range(0, len(values)):
+        #    if values[i] == 0:
+        #        print(functions[i], '-->', word, ": 0")
+        #        return 0
+        return 0
+    #for i in range(0, len(values)):
+    #    if values[i] == -1:
+    #        print(functions[i], "-->", word, ": -1")
     return -1
-
 
 def algo(word, fichier, dico, list_of_symbols, mots):
     functions = []
@@ -121,7 +89,6 @@ def algo(word, fichier, dico, list_of_symbols, mots):
     for function in fichier:
         if check_if_usefull(function, word) == True:
             functions.append(function)
-    indetermine = 0
     values = []
     for function in functions:
         expression, conclusion = function.split("=")
@@ -133,17 +100,7 @@ def algo(word, fichier, dico, list_of_symbols, mots):
                 dico[mot] = algo(mot, fichier, dico, list_of_symbols, mots)
         value = evaluation(dico, expression, conclusion, list_of_symbols, word)
         values.append(value)
-    return check_contradiction(functions, values, word)
-        #if value == 1:
-        #    print(function, ":", word, "=", value)
-        #    return 1
-        #if value == 0:
-        #    indetermine = 1
-        #print(function, ":", word, "=", value)
-    #if indetermine == 1:
-    #    print(word, "est indeterminé.")
-    #    return 0
-    #return -1
+    return check_contradiction(functions, values, word, dico)
 
 def main():
     try:
@@ -152,11 +109,23 @@ def main():
         print("Il faut donner un fichier au script")
     list_of_symbols = ['(', ')', '!', '+', '|', '^', '=', '>', '<', '?']
     fichier, dico, target = parse.parse(file_path, list_of_symbols)
-    print('\n')
     for word in target:
-        print("Word :", word)
-        target = algo(word, fichier, dico, list_of_symbols, [])
-        print("Règle " + word + " :", target, "\n")
+        #print("Word :", word)
+        tmp = copy.copy(dico)
+        print(dico)
+        target = algo(word, fichier, tmp, list_of_symbols, [])
+        if target == 1:
+            print("Règle " + word + " : Vraie\n")
+        if target == 0:
+            print("Règle " + word + " : Indéfinie\n")
+        if target == -1:
+            print("Règle " + word + " : Fausse\n")
+        if target == -2:
+            print("Règle " + word + " : Il y a eu une contradiction\n")
 
 if __name__ == "__main__":
-    main()
+    try:
+        sys.argv[2]
+        print("Il ne doit y avoir qu'un seul argument : le chemin du fichier.")
+    except:
+        main()

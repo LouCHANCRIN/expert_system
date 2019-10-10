@@ -6,7 +6,7 @@
 #    By: lchancri <lchancri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/10/08 17:23:49 by lchancri          #+#    #+#              #
-#    Updated: 2019/10/08 17:31:03 by lchancri         ###   ########.fr        #
+#    Updated: 2019/10/10 15:52:55 by lchancri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -67,6 +67,4 @@ def parse(file_path, list_of_symbols):
     split = clear_text(split)
     for line in split:
         dico, target = fill_dict(dico, target, line, list_of_symbols)
-    print(dico)
-    print(target)
     return split, dico, target
