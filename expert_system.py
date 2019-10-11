@@ -6,7 +6,7 @@
 #    By: lchancri <lchancri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/10/08 15:50:35 by lchancri          #+#    #+#              #
-#    Updated: 2019/10/10 17:12:18 by lchancri         ###   ########.fr        #
+#    Updated: 2019/10/11 19:33:14 by lchancri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,33 @@ import copy
 <=> if and only if
 '''
 
+'''
+def check_contradiction(functions, values, word, dico):
+    print("----------------------------------------------------")
+    print("Word :", word)
+    print("Fonctions :")
+    for i in range(0, len(values)):
+        print(functions[i], "}--->>>", word, "=", values[i])
+    if not values:
+        #print("Est-ce un cas indefini lorsqu'il n'y a pas d'expression permettant de déterminer la valeur d'une lettre ?")
+        return -1
+    if 1 in values and -1 in values:
+        print("Il y a une contradiction")
+        return -2
+    if 1 in values:
+        #for i in range(0, len(values)):
+        #    if values[i] == 1:
+        #        print(functions[i], '-->', word, ": 1")
+        #        return 1
+        return 1
+    if 0 in values:
+        return 0
+    for i in range(0, len(values)):
+        if values[i] != -2:
+            return -1
+    return -2'
+'''
+
 def check(conclusion, i, length):
     undefined = ['^', '|']
     if ((i > 0 and conclusion[i-1] in undefined)
@@ -36,8 +63,8 @@ def check(conclusion, i, length):
 
 def evaluation(dico, expression, conclusion, list_of_symbols, word):
     first = evaluate.evaluate_expression(expression, dico, list_of_symbols)
-    if first == -1:
-        return -1
+    if first == -1 or first == -2:
+        return first
     length = len(conclusion)
     for i in range(0, length):
         if conclusion[i] == word:
@@ -56,32 +83,31 @@ def check_if_usefull(line, target):
     return False
 
 def check_contradiction(functions, values, word, dico):
+    print("----------------------------------------------------")
+    print("Word :", word)
+    print("Fonctions :")
     for i in range(0, len(values)):
         print(functions[i], "}--->>>", word, "=", values[i])
     if not values:
         #print("Est-ce un cas indefini lorsqu'il n'y a pas d'expression permettant de déterminer la valeur d'une lettre ?")
-        return -1
-    if 1 in values and -1 in values:
+        ret = -1
+    elif 1 in values and -1 in values:
         print("Il y a une contradiction")
-        #for i in range(0, len(values)):
-        #    print(functions[i], "=", values[i])
-        return -2
-    if 1 in values:
+        ret = -2
+    elif 1 in values:
         #for i in range(0, len(values)):
         #    if values[i] == 1:
         #        print(functions[i], '-->', word, ": 1")
         #        return 1
-        return 1
-    if 0 in values:
-        #for i in range(0, len(values)):
-        #    if values[i] == 0:
-        #        print(functions[i], '-->', word, ": 0")
-        #        return 0
-        return 0
-    #for i in range(0, len(values)):
-    #    if values[i] == -1:
-    #        print(functions[i], "-->", word, ": -1")
-    return -1
+        ret = 1
+    elif 0 in values:
+        ret = 0
+    elif -2 not in values:
+        ret = -1
+    else:
+        ret = -2
+    print("Resultat :", ret)
+    return ret
 
 def algo(word, fichier, dico, list_of_symbols, mots):
     functions = []
@@ -97,7 +123,9 @@ def algo(word, fichier, dico, list_of_symbols, mots):
                     and dico[expression[i]] == -1
                     and expression[i] not in  mots):
                 mot = expression[i]
-                dico[mot] = algo(mot, fichier, dico, list_of_symbols, mots)
+                result = algo(mot, fichier, dico, list_of_symbols, mots)
+                dico[mot] = result
+                #print(dico)
         value = evaluation(dico, expression, conclusion, list_of_symbols, word)
         values.append(value)
     return check_contradiction(functions, values, word, dico)
@@ -112,8 +140,9 @@ def main():
     for word in target:
         #print("Word :", word)
         tmp = copy.copy(dico)
-        print(dico)
+        print("Dico :", dico)
         target = algo(word, fichier, tmp, list_of_symbols, [])
+        print("Tmp  :", tmp)
         if target == 1:
             print("Règle " + word + " : Vraie\n")
         if target == 0:

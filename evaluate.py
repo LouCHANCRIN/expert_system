@@ -6,7 +6,7 @@
 #    By: lchancri <lchancri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/10/08 17:23:50 by lchancri          #+#    #+#              #
-#    Updated: 2019/10/10 15:52:47 by lchancri         ###   ########.fr        #
+#    Updated: 2019/10/11 19:33:01 by lchancri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -95,6 +95,8 @@ def evaluate_expression(expression, dico, list_of_symbols):
     for i in range(0, len(expression)):
         if expression[i] not in list_of_symbols:
             expression[i] = dico[expression[i]]
+            if expression[i] == -2:
+                return -2
     # Turn !-1 in 1 and !1 in -1
     for i in range(0, len(expression)):
         if expression[i] == '!' and expression[i+1] not in ['(', ')']:
