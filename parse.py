@@ -1,70 +1,56 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    parse.py                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: lchancri <lchancri@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/10/08 17:23:49 by lchancri          #+#    #+#              #
-#    Updated: 2019/10/10 15:52:55 by lchancri         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
 
-import sys
+class ast():
+    def __init__(self, value, left, right):
+        self.value = value
+        self.left = left
+        self.right = right
 
-def read_file(file_path):
-    f = open(file_path, "r")
-    fichier = f.read()
-    f.close()
-    return fichier
+def atom_parser(stream):
+    if not stream:
+        raise SyntaxError("Unexcepted EOF")
+    if stream[0].isupper() == True:
+        return ast(stream[0], None, None), 1
+    if stream[0] == '(':
+        right, current_r = xor_parser(stream[1:])
+        if current_r < len(stream) and stream[current_r + 1] == ')':
+            return right, current_r + 2
+        raise SyntaxError("Missing )")
+    raise SyntaxError("Only upper case are accepted as operand")
 
-def loop(to_fill, line, value, list_of_symbols):
-    for i in range(0, len(line)):
-        if line[i] not in list_of_symbols:
-            try:
-                to_fill[line[i]] = value
-            except Exception as e:
-                pass
-    return to_fill
+def not_parser(stream):
+    if stream[0] == '!':
+        left, current = not_parser(stream[1:])
+        return ast(stream[0], left, None), current + 1
+    return atom_parser(stream)
 
-def fill_dict(dico, target, line, list_of_symbols):
-    if line == '' or line[0] == '#':
-        return dico, target
-    if line[0] == '?':
-        target = loop(target, line, None, list_of_symbols)
-    else:
-        if line[0] == '=':
-            value = 1
-        else:
-            value = -1
-        dico = loop(dico, line, value, list_of_symbols)
-    return dico, target
+def and_parser(stream):
+    left, current = not_parser(stream)
+    if current < len(stream) and stream[current] == '+':
+        right, current_r = and_parser(stream[current + 1:])
+        return ast(stream[current], left, right), current + current_r + 1
+    return left, current
 
-def clear_text(split):
-    length = len(split)
-    i = 0
-    while i < length:
-        line = split[i]
-        if line == "" or line[0] == '#':
-            split.remove(split[i])
-            length -= 1
-            i -= 1
-        else:
-            for j in range(0, len(line)):
-                if line[j] == '#':
-                    split[i] = line[:j]
-                    break
-        i += 1
-    return split
+def or_parser(stream):
+    left, current = and_parser(stream)
+    if current < len(stream) and stream[current] == '|':
+        right, current_r = or_parser(stream[current + 1:])
+        return ast(stream[current], left, right), current + current_r + 1
+    return left, current
 
-def parse(file_path, list_of_symbols):
-    fichier = read_file(file_path)
-    fichier = fichier.strip()
-    fichier = fichier.replace(" ", "")
-    split = fichier.split('\n')
-    dico = {}
-    target = {}
-    split = clear_text(split)
-    for line in split:
-        dico, target = fill_dict(dico, target, line, list_of_symbols)
-    return split, dico, target
+def xor_parser(stream):
+    left, current = or_parser(stream)
+    if current < len(stream) and stream[current] == '^':
+        right, current_r = xor_parser(stream[current + 1:])
+        return ast(stream[current], left, right), current + current_r + 1
+    return left, current
+
+def if_parser(stream):
+    left_part, current = xor_parser(stream)
+    if current >= len(stream):
+        raise SyntaxError("Missing assignation and expression")
+    if stream[current] != '=>' and stream[current] != '<=>':
+        raise SyntaxError("Missing assignation")
+    if not stream[current + 1:]:
+        raise SyntaxError("Missing expression after assignation")
+    right_part, current_r = xor_parser(stream[current + 1:])
+    return ast(stream[current], left_part, right_part)
