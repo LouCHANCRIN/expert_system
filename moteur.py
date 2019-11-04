@@ -14,10 +14,24 @@ def ft_or(left, right):
 
 def ft_xor(left, right):
 	if left == True and right == False: return True
-	if left == False and right == True: return True
+	if right == True and left == False: return True
 	return False
 
 functions = {'!': ft_not, '+': ft_and, '|': ft_or, '^': ft_xor}
+
+def solve_querie(tree, querie, values, facts):
+	check = False
+	for q in facts:
+		if check == True:
+			if facts[q] == None:
+				return None
+		if q == querie:
+			check = True
+	if True in values and False not in values and None not in values:
+		return True
+	if True in values and (False in values or None in values):
+		return None
+	return False
 
 def evaluate(rule, facts, dictionnaire):
 	if not rule:
@@ -32,38 +46,21 @@ def evaluate(rule, facts, dictionnaire):
 	fatcs, right = evaluate(rule.right, facts, dictionnaire)
 	return facts, functions[rule.value](left, right)
 
-def solve_querie(tree, querie, values):
-	print(values)
-	if True in values and False not in values and None not in values:
-		return True
-	return False
-
 def moteur(querie, facts, dictionnaire):
 	facts[querie] = None
 	if querie not in dictionnaire:
-		print("Insolvable, il n'existe pas de règle pour déterminer la valeur de '" + querie + "'.")
 		return False
 	values = []
 	for rule in dictionnaire[querie]:
 		facts, value = evaluate(rule.left, facts, dictionnaire)
 		values.append(value)
-	print(facts)
-	print(values)
-	return solve_querie(rule.right, querie, values)
-
-def get_facts(facts, queries):
-	facts.remove("=")
-	queries.remove("?")
-	f = {}
-	for fact in facts:
-		f[fact] = True
-	return f, queries
+	return solve_querie(rule.right, querie, values, facts)
 
 def inference(rules, facts, queries, dictionnaire):
-	facts, queries = get_facts(facts, queries)
-	print(queries)
-	print(facts)
 	for querie in queries:
 		tmp = copy.copy(facts)
 		result = moteur(querie, tmp, dictionnaire)
-		print("Querie '" + querie + "' is", result)
+		if result == None:
+			print("Querie '" + querie + "' is Undefined")
+		else:
+			print("Querie '" + querie + "' is", result)

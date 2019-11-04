@@ -1,12 +1,12 @@
 import sys
 import os.path
 from read import read_file
-from aaa import get_dict
+from format import get_dict
 from moteur import inference
 
 def main():
     rules, facts, queries = read_file()
-    dictionnaire = get_dict(rules)
+    dictionnaire, facts, queries = get_dict(rules, facts, queries)
     inference(rules, facts, queries, dictionnaire)
 
 if __name__ == "__main__":
