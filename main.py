@@ -6,8 +6,8 @@ from moteur import inference
 
 def main():
     rules, facts, queries = read_file()
-    dictionnaire, facts, queries = get_dict(rules, facts, queries)
-    inference(rules, facts, queries, dictionnaire)
+    dictionnaire, facts, queries, initial_fatcs = get_dict(rules, facts, queries)
+    inference(rules, facts, queries, dictionnaire, initial_fatcs)
 
 if __name__ == "__main__":
     ### check number argument, one argument must be present

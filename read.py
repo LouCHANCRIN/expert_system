@@ -35,9 +35,11 @@ def read_file():
                 elif tmp[0] == '?' and rules and facts is not None:
                     queries = tmp
                 elif tmp[0] != '=' and tmp[0] != '?' and queries is None and facts is None:
-                    print(tmp)
+                    #print(tmp)
                     tmp_parser = if_parser(tmp)
+                    #rule = {"règle": tmp_parser, "ligne": tmp}
                     #print_tree(tmp_parser, "center")
+                    #rules.append(rule)
                     rules.append(tmp_parser)
                 else:
                     raise Exception("Wrong formatage of file %s" %sys.argv[1])
