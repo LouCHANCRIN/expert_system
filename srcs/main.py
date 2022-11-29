@@ -4,12 +4,12 @@ from read_file_with_info import read_file
 from inference_engine import inf_engine
 from shell import interactive_shell
 
-def print_tree(rule, pos, deepth):
-    print(rule.value, pos, deepth)
+def print_tree(rule, pos, depth):
+    print(rule.value, pos, depth)
     if rule.left is not None:
-        print_tree(rule.left, "left", deepth + 1)
+        print_tree(rule.left, "left", depth + 1)
     if rule.right is not None:
-        print_tree(rule.right, 'right', deepth + 1)
+        print_tree(rule.right, 'right', depth + 1)
 
 def main():
     inference_engine = read_file()
