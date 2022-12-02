@@ -1,7 +1,6 @@
 import sys
 import os.path
 from read_file_with_info import read_file
-from inference_engine import inf_engine
 from shell import interactive_shell
 
 def print_tree(rule, pos, depth):

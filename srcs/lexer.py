@@ -1,7 +1,7 @@
-from inference_engine import dictionnary_of_rules
+from inference_engine import operator_to_function
 
 def check_if_operator(line):
-    for opera in dictionnary_of_rules.keys():
+    for opera in operator_to_function.keys():
         if line.startswith(opera):
             return opera
     return ""

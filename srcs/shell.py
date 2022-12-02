@@ -14,12 +14,12 @@ def interactive_shell(inference_engine):
             if check_if_only_alpha(tmp) is True:
                 inference_engine.facts = tmp
             else:
-                print("Unexcepted cara, only upper case are accepted")
+                print("Unexcepted character, only upper case are accepted")
         elif line[0] == '?':
             if check_if_only_alpha(tmp) is True:
                 inference_engine.queries = tmp
                 inference_engine.execute()
             else:
-                print("Unexcepted cara, only upper case are accepted")
+                print("Unexcepted character, only upper case are accepted")
         else:
             print("nothing is done, missing = or ?")

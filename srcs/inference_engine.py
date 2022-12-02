@@ -26,12 +26,11 @@ def or_op(left, right):
 def xor_op(left, right):
     if left == CYCLE or right == CYCLE:
         return CYCLE
-    if left is True and (right is None or right is False) or (left is None or left is False) and\
-        right is True:
+    if left is True and (right is None or right is False) or (left is None or left is False) and right is True:
         return True
     return None
 
-dictionnary_of_rules = {'!': not_op, '+': and_op, '|': or_op, '^': xor_op, '=>': None, '<=>': None}
+operator_to_function = {'!': not_op, '+': and_op, '|': or_op, '^': xor_op, '=>': None, '<=>': None}
 
 class InferenceError(Exception):
     def __init__(self, message):
@@ -49,7 +48,7 @@ class inf_engine():
         left = self.execute_tree(tree.left)
         right = self.execute_tree(tree.right)
         if tree.operator is True:
-            return dictionnary_of_rules[tree.value](left, right)
+            return operator_to_function[tree.value](left, right)
         return self.compute_state_querie(tree.value)
 
     def compute_conclusion(self, tree):
@@ -77,7 +76,7 @@ class inf_engine():
         for ele in self.rules[querie]:
             if ele.status is True and state_before is False or\
                 ele.status is False and state_before is True:
-                raise InferenceError("(%c can't be True and False at the same time)" %querie)
+                raise InferenceError(f"({querie}can't be True and False at the same time)")
             if ele.status is not None and ele.status != CYCLE:
                 state_before = ele.status
             elif ele.status == CYCLE and self.check_other_status(querie) is True:
@@ -119,13 +118,13 @@ class inf_engine():
             try:
                 state_querie = self.compute_state_querie(querie)
                 if state_querie is True:
-                    print("%c is True" %querie)
+                    print(f"{querie} is True")
                 elif state_querie == CYCLE:
-                    print("%c is False, (Cycle detected.)" %querie)
+                    print(f"{querie} is False, (Cycle detected.)")
                 else:
-                    print("%c is False" %querie)
-            except InferenceError as error_to_print:
-                print("%c is False, %s" %(querie, str(error_to_print)))
+                    print(f"{querie} is False")
+            except InferenceError as e:
+                print(f"{querie} is False, {str(e)}")
         self.clear_rules()
         sys.stdout.write('\n')
 

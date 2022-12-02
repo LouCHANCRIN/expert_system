@@ -132,12 +132,12 @@ def read_file():
                     if check_if_only_alpha(tmp) is True:
                         engine.facts = tmp
                     else:
-                        print("Unexcepted cara, only upper case are accepted in %s" %line)
+                        print("Unexcepted character, only upper case are accepted in %s" %line)
                 elif tmp[0] == '?' and engine.facts is not None:
                     if check_if_only_alpha(tmp) is True:
                         engine.queries = tmp
                     else:
-                        print("Unexcepted cara, only upper case are accepted in %s" %line)
+                        print("Unexcepted character, only upper case are accepted in %s" %line)
                 elif tmp[0] != '=' and tmp[0] != '?' and engine.queries is None and\
                         engine.facts is None:
                     try:
